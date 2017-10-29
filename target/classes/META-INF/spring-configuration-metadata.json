@@ -1,0 +1,69 @@
+{
+  "groups": [
+    {
+      "name": "application",
+      "sourceType": "com.ceitechs.dproz.usermanagement.config.ApplicationProperties",
+      "type": "com.ceitechs.dproz.usermanagement.config.ApplicationProperties"
+    },
+    {
+      "name": "oauth2",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties",
+      "type": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties"
+    },
+    {
+      "name": "oauth2.signature-verification",
+      "sourceMethod": "public com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties.SignatureVerification getSignatureVerification() ",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties",
+      "type": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$SignatureVerification"
+    },
+    {
+      "name": "oauth2.web-client-configuration",
+      "sourceMethod": "public com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties.WebClientConfiguration getWebClientConfiguration() ",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties",
+      "type": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$WebClientConfiguration"
+    }
+  ],
+  "hints": [],
+  "properties": [
+    {
+      "description": "Endpoint where to retrieve the public key used to verify token signatures.",
+      "name": "oauth2.signature-verification.public-key-endpoint-uri",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$SignatureVerification",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "Maximum refresh rate for public keys in ms.\n We won't fetch new public keys any faster than that to avoid spamming UAA in case\n we receive a lot of \"illegal\" tokens.",
+      "name": "oauth2.signature-verification.public-key-refresh-rate-limit",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$SignatureVerification",
+      "type": "java.lang.Long"
+    },
+    {
+      "description": "Maximum TTL for the public key in ms.\n The public key will be fetched again from UAA if it gets older than that.\n That way, we make sure that we get the newest keys always in case they are updated there.",
+      "name": "oauth2.signature-verification.ttl",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$SignatureVerification",
+      "type": "java.lang.Long"
+    },
+    {
+      "name": "oauth2.web-client-configuration.client-id",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$WebClientConfiguration",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "Defines the cookie domain. If specified, cookies will be set on this domain.\n If not configured, then cookies will be set on the top-level domain of the\n request you sent, i.e. if you send a request to <code>app1.your-domain.com<\/code>,\n then cookies will be set <code>on .your-domain.com<\/code>, such that they\n are also valid for <code>app2.your-domain.com<\/code>.",
+      "name": "oauth2.web-client-configuration.cookie-domain",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$WebClientConfiguration",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "oauth2.web-client-configuration.secret",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$WebClientConfiguration",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "Holds the session timeout in seconds for non-remember-me sessions.\n After so many seconds of inactivity, the session will be terminated.\n Only checked during token refresh, so long access token validity may\n delay the session timeout accordingly.",
+      "name": "oauth2.web-client-configuration.session-timeout-in-seconds",
+      "sourceType": "com.ceitechs.dproz.shared.config.oauth2.OAuth2Properties$WebClientConfiguration",
+      "type": "java.lang.Integer"
+    }
+  ]
+}
