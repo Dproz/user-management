@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+/**
+ * Address
+ * @author pdigumarthi
+ *
+ */
 @Data
 public class Address implements Serializable {
 	

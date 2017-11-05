@@ -28,4 +28,16 @@ public class UserServiceImpl implements UserService {
 		return userRepository.save(user);
 	}
 
+
+	@Override
+	public User updateUser(User user) {
+		return userRepository.save(user);
+	}
+
+
+	@Override
+	public boolean existsUser(String id) {
+		return userRepository.existsById(id);
+	}
+
 }

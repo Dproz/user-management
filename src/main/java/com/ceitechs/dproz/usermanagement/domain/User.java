@@ -25,7 +25,7 @@ public class User implements Serializable {
 	@Id
 	private String userReferenceId;
 	
-	
+	@NotNull
 	private UserType userType;
 
 	@NotNull

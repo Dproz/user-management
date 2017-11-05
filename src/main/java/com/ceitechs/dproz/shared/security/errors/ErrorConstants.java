@@ -6,9 +6,9 @@ public final class ErrorConstants {
 
     public static final String ERR_CONCURRENCY_FAILURE = "error.concurrencyFailure";
     public static final String ERR_VALIDATION = "error.validation";
-    public static final URI DEFAULT_TYPE = URI.create("http://www.jhipster.tech/problem/problem-with-message");
-    public static final URI CONSTRAINT_VIOLATION_TYPE = URI.create("http://www.jhipster.tech/problem/contraint-violation");
-    public static final URI PARAMETERIZED_TYPE = URI.create("http://www.jhipster.tech/problem/parameterized");
+    public static final URI DEFAULT_TYPE = URI.create("https://www.dproz.com/problem/problem-with-message");
+    public static final URI CONSTRAINT_VIOLATION_TYPE = URI.create("https://www.dproz.com/problem/contraint-violation");
+    public static final URI PARAMETERIZED_TYPE = URI.create("https://www.dproz.com/problem/parameterized");
 
     private ErrorConstants() {
     }

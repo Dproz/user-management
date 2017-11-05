@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
@@ -55,14 +56,15 @@ public class DatabaseConfiguration {
 	}
 
 	@Bean
-	public Mongobee mongobee(MongoClient mongoClient, MongoTemplate mongoTemplate, MongoProperties mongoProperties) {
+	public Mongobee mongobee(MongoClient mongoClient, MongoTemplate mongoTemplate, MongoProperties mongoProperties,Environment environment) {
 		log.debug("Configuring Mongobee"+uri);
 		Mongobee mongobee = new Mongobee(mongoClient);
 		mongobee.setDbName(mongoProperties.getDatabase());
 		mongobee.setMongoTemplate(mongoTemplate);
 		// package to scan for migrations
-		mongobee.setChangeLogsScanPackage("com.ceitechs.dproz.config.dbmigrations");
+		mongobee.setChangeLogsScanPackage("com.ceitechs.dproz.usermanagement.config.dbmigrations");
 		mongobee.setEnabled(true);
+		mongobee.setSpringEnvironment(environment);
 		return mongobee;
 	}
 }
