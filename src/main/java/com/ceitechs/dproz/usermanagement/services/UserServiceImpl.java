@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User addUser(User user) {
-		return userRepository.save(user);
+		return userRepository.insert(user);
 	}
 
 
@@ -38,6 +38,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean existsUser(String id) {
 		return userRepository.existsById(id);
+	}
+
+
+	@Override
+	public Optional<User> findOneByEmailIgnoreCase(String emailAddress) {
+		return userRepository.findOneByEmailAddressIgnoreCase(emailAddress);
 	}
 
 }

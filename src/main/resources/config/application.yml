@@ -8,3 +8,29 @@ spring:
 info: 
   project: 
     version: "@project.version@"
+
+management:
+  context-path: /applicaton    
+jhipster:
+    cors:
+        allowed-origins: "*"
+        allowed-methods: GET, PUT, POST, DELETE, OPTIONS
+        allowed-headers: "*"
+        exposed-headers:
+        allow-credentials: true
+        max-age: 1800
+    swagger:
+        default-include-pattern: /api/.*
+        title: user management API
+        description: user management API documentation
+        version: 0.0.1
+        terms-of-service-url:
+        contact-name:
+        contact-url:
+        contact-email:
+        license:
+        license-url:
+    security:
+      client-authorization:
+        client-id: user-management    
+

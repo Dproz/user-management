@@ -1,4 +1,6 @@
-spring: 
+spring:
+  profiles:
+    include: swagger
   cloud: 
     consul: 
       discovery: 

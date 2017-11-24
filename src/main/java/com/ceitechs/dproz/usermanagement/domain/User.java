@@ -1,6 +1,8 @@
 package com.ceitechs.dproz.usermanagement.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -10,6 +12,8 @@ import javax.validation.constraints.Pattern;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -46,6 +50,9 @@ public class User implements Serializable {
 	@NotBlank
 	private String emailAddress;
 	
+	
+	private boolean active;
+	
 	/**
 	 * Password has following validations:
 	 * 1. Should have at least 1 capital letter
@@ -58,5 +65,8 @@ public class User implements Serializable {
 	private String password;
 	
 	private String profilePictureUrl;
+	
+	@JsonIgnore
+    private Set<Authority> authorities = new HashSet<>();
 
 }

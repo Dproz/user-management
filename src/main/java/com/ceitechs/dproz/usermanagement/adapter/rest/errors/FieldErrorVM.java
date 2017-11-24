@@ -1,4 +1,4 @@
-package com.ceitechs.dproz.shared.security.errors;
+package com.ceitechs.dproz.usermanagement.adapter.rest.errors;
 
 import java.io.Serializable;
 
