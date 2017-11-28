@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -86,14 +87,12 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
             .and()
                 .authorizeRequests()
                 .antMatchers("/api/dproz/users/login").permitAll()
-                .antMatchers("/api/activate").permitAll()
-                .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/api/account/reset-password/init").permitAll()
-                .antMatchers("/api/account/reset-password/finish").permitAll()
-                .antMatchers("/api/profile-info").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/dproz/users").permitAll()
+                .antMatchers("/api/dproz/users/**/activate").permitAll()
                 .antMatchers("/api/**").authenticated()
-                .antMatchers("/management/health").permitAll()
-                .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/application/health").permitAll()
+                .antMatchers("/application/env").permitAll()
+                .antMatchers("/application/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers("/swagger-ui/index.html").permitAll();
@@ -125,7 +124,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
          */
         clients.inMemory()
             .withClient(uaaProperties.getWebClientConfiguration().getClientId())
-            .secret(uaaProperties.getWebClientConfiguration().getSecret())
+            .secret("{noop}"+ uaaProperties.getWebClientConfiguration().getSecret())
             .scopes("openid")
             .autoApprove(true)
             .authorizedGrantTypes("implicit","refresh_token", "password", "authorization_code")
@@ -133,7 +132,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
             .refreshTokenValiditySeconds(refreshTokenValidity)
             .and()
             .withClient(jHipsterProperties.getSecurity().getClientAuthorization().getClientId())
-            .secret(jHipsterProperties.getSecurity().getClientAuthorization().getClientSecret())
+            .secret("{noop}"+jHipsterProperties.getSecurity().getClientAuthorization().getClientSecret())
             .scopes("web-app")
             .autoApprove(true)
             .authorizedGrantTypes("client_credentials")

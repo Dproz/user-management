@@ -2,9 +2,12 @@ package com.ceitechs.dproz.usermanagement.services;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ceitechs.dproz.shared.security.AuthoritiesConstants;
 import com.ceitechs.dproz.usermanagement.adapter.datastore.mongo.UserRepostitory;
+import com.ceitechs.dproz.usermanagement.domain.Authority;
 import com.ceitechs.dproz.usermanagement.domain.User;
 import com.ceitechs.dproz.usermanagement.domain.UserService;
 
@@ -13,8 +16,11 @@ public class UserServiceImpl implements UserService {
 	
 	private UserRepostitory userRepository;
 	
-	public UserServiceImpl(UserRepostitory userRepostitory) {
+	private final PasswordEncoder passwordEncoder;
+	
+	public UserServiceImpl(UserRepostitory userRepostitory,PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepostitory;	
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 
@@ -25,6 +31,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User addUser(User user) {
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        // TODO for now default to USER ROLE
+        Authority userAuthority = new Authority();
+		userAuthority.setName(AuthoritiesConstants.USER);
+		user.getAuthorities().add(userAuthority);
+        user.setPassword(encryptedPassword);
 		return userRepository.insert(user);
 	}
 
