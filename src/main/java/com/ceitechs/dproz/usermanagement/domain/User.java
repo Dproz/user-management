@@ -60,7 +60,7 @@ public class User implements Serializable {
 	 * 4. Only alphabets numbers and #@%*-_ are allowed
 	 */
 	@NotNull
-    //@Pattern(regexp  = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9_#@%\\*\\-]{8,24}$")
+	//@Pattern(regexp  = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9_#@%\\*\\-]{8,24}$")
 	private String password;
 	
 	private String profilePictureUrl;

@@ -65,8 +65,8 @@ public class AddTestDataChangeLog {
 		systemUser1.setAddress(address2);
 		systemUser1.setPhone(phone2);
 		systemUser1.setUserType(UserType.USER);
-		systemUser.setActive(true);
-		systemUser.getAuthorities().add(userAuthority);
+		systemUser1.setActive(true);
+		systemUser1.getAuthorities().add(userAuthority);
 		mongoTemplate.save(systemUser1);
 		
 		Address address3 = new Address();
