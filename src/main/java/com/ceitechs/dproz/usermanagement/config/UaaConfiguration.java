@@ -72,30 +72,31 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-            .and()
-                .csrf()
-                .disable()
-                .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-                .headers()
-                .frameOptions()
-                .disable()
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-                .authorizeRequests()
-                .antMatchers("/api/dproz/users/login").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/dproz/users").permitAll()
-                .antMatchers("/api/dproz/users/**/activate").permitAll()
-                .antMatchers("/api/**").authenticated()
-                .antMatchers("/application/health").permitAll()
-                .antMatchers("/application/env").permitAll()
-                .antMatchers("/application/**").hasAuthority(AuthoritiesConstants.ADMIN)
-                .antMatchers("/v2/api-docs/**").permitAll()
-                .antMatchers("/swagger-resources/configuration/ui").permitAll()
-                .antMatchers("/swagger-ui/index.html").permitAll();
+                    .exceptionHandling()
+                    .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                    .and()
+                    .csrf()
+                    .disable()
+                    .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+                    .headers()
+                    .frameOptions()
+                    .disable()
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .authorizeRequests()
+                    .antMatchers("/api/dproz/users/login").permitAll()
+                    .antMatchers("/outh/token").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/dproz/users").permitAll()
+                    .antMatchers("/api/dproz/users/**/activate").permitAll()
+                    .antMatchers("/api/**").authenticated()
+                    .antMatchers("/application/health").permitAll()
+                    .antMatchers("/application/env").permitAll()
+                    .antMatchers("/application/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                    .antMatchers("/v2/api-docs/**").permitAll()
+                    .antMatchers("/swagger-resources/configuration/ui").permitAll()
+                    .antMatchers("/swagger-ui/index.html").permitAll();
         }
 
         @Override
@@ -123,21 +124,21 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
         For a better client design, this should be done by a ClientDetailsService (similar to UserDetailsService).
          */
         clients.inMemory()
-            .withClient(uaaProperties.getWebClientConfiguration().getClientId())
-            .secret("{noop}"+ uaaProperties.getWebClientConfiguration().getSecret())
-            .scopes("openid")
-            .autoApprove(true)
-            .authorizedGrantTypes("implicit","refresh_token", "password", "authorization_code")
-            .accessTokenValiditySeconds(accessTokenValidity)
-            .refreshTokenValiditySeconds(refreshTokenValidity)
-            .and()
-            .withClient(jHipsterProperties.getSecurity().getClientAuthorization().getClientId())
-            .secret("{noop}"+jHipsterProperties.getSecurity().getClientAuthorization().getClientSecret())
-            .scopes("web-app")
-            .autoApprove(true)
-            .authorizedGrantTypes("client_credentials")
-            .accessTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSeconds())
-            .refreshTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSecondsForRememberMe());
+                .withClient(uaaProperties.getWebClientConfiguration().getClientId())
+                .secret("{noop}" + uaaProperties.getWebClientConfiguration().getSecret())
+                .scopes("openid")
+                .autoApprove(true)
+                .authorizedGrantTypes("implicit", "refresh_token", "password", "authorization_code")
+                .accessTokenValiditySeconds(accessTokenValidity)
+                .refreshTokenValiditySeconds(refreshTokenValidity)
+                .and()
+                .withClient(jHipsterProperties.getSecurity().getClientAuthorization().getClientId())
+                .secret("{noop}" + jHipsterProperties.getSecurity().getClientAuthorization().getClientSecret())
+                .scopes("web-app")
+                .autoApprove(true)
+                .authorizedGrantTypes("client_credentials")
+                .accessTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSeconds())
+                .refreshTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSecondsForRememberMe());
     }
 
     @Override
@@ -145,13 +146,13 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
         //pick up all  TokenEnhancers incl. those defined in the application
         //this avoids changes to this class if an application wants to add its own to the chain
         Collection<TokenEnhancer> tokenEnhancers = applicationContext.getBeansOfType(TokenEnhancer.class).values();
-        TokenEnhancerChain tokenEnhancerChain=new TokenEnhancerChain();
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(new ArrayList<>(tokenEnhancers));
         endpoints
-            .authenticationManager(authenticationManager)
-            .tokenStore(tokenStore())
-            .tokenEnhancer(tokenEnhancerChain)
-            .reuseRefreshTokens(false);             //don't reuse or we will run into session inactivity timeouts
+                .authenticationManager(authenticationManager)
+                .tokenStore(tokenStore())
+                .tokenEnhancer(tokenEnhancerChain)
+                .reuseRefreshTokens(false);             //don't reuse or we will run into session inactivity timeouts
     }
 
     @Autowired
@@ -160,6 +161,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
 
     /**
      * Apply the token converter (and enhancer) for token store.
+     *
      * @return the JwtTokenStore managing the tokens.
      */
     @Bean
@@ -177,8 +179,8 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         KeyPair keyPair = new KeyStoreKeyFactory(
-             new ClassPathResource(uaaProperties.getKeyStore().getName()), uaaProperties.getKeyStore().getPassword().toCharArray())
-             .getKeyPair(uaaProperties.getKeyStore().getAlias());
+                new ClassPathResource(uaaProperties.getKeyStore().getName()), uaaProperties.getKeyStore().getPassword().toCharArray())
+                .getKeyPair(uaaProperties.getKeyStore().getAlias());
         converter.setKeyPair(keyPair);
         return converter;
     }
