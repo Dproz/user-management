@@ -36,7 +36,9 @@ management:
 endpoints:
   default:
     web:
-      enabled: true     
+      enabled: true
+  beans:
+    enabled: true
 
 oauth2: 
   signature-verification: 

@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.BeansException;
@@ -26,6 +27,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -93,6 +97,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
                     .antMatchers("/api/**").authenticated()
                     .antMatchers("/application/health").permitAll()
                     .antMatchers("/application/env").permitAll()
+                    .antMatchers("/application/beans").permitAll()
                     .antMatchers("/application/**").hasAuthority(AuthoritiesConstants.ADMIN)
                     .antMatchers("/v2/api-docs/**").permitAll()
                     .antMatchers("/swagger-resources/configuration/ui").permitAll()
@@ -182,6 +187,15 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
                 new ClassPathResource(uaaProperties.getKeyStore().getName()), uaaProperties.getKeyStore().getPassword().toCharArray())
                 .getKeyPair(uaaProperties.getKeyStore().getAlias());
         converter.setKeyPair(keyPair);
+        AccessTokenConverter customAccessTokenConverter = new DefaultAccessTokenConverter() {
+            @Override
+            public OAuth2Authentication extractAuthentication(Map<String, ?> claims) {
+                OAuth2Authentication authentication = super.extractAuthentication(claims);
+                authentication.setDetails(claims);		// Store all the claims
+                return authentication;
+            }
+        };
+        converter.setAccessTokenConverter(customAccessTokenConverter);
         return converter;
     }
 

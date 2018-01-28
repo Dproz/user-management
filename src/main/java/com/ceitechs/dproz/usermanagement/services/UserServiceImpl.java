@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User addUser(User user) {
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
-        // TODO for now default to USER ROLE
+        // TO DO for now default to USER ROLE
         Authority userAuthority = new Authority();
 		userAuthority.setName(AuthoritiesConstants.USER);
 		user.getAuthorities().add(userAuthority);

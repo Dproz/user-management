@@ -1,5 +1,7 @@
 package com.ceitechs.dproz.usermanagement.adapter.rest;
 
+import com.ceitechs.dproz.shared.security.SecurityUtils;
+import java.util.Optional;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +33,21 @@ public class UserController {
 	
 
 	@GetMapping(value= "/{id}")
-	public ResponseEntity<User> getUser(@PathVariable String id){	
+	public ResponseEntity<User> getUser(@PathVariable String id){
+	  validateUserReferenceId(id);
 		return ResponseUtil.wrapOrNotFound(userService.getUser(id));
 		
 	}
-	
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
+
+  private void validateUserReferenceId(String id) {
+    boolean isValid = Optional.ofNullable(SecurityUtils.getCurrentUserReferenceId()).
+        map(idFromToken ->  idFromToken.equals(id)).orElse(false);
+    if (!isValid){
+      throw new CustomParameterizedException("getUser.invalidReferenceId");
+    }
+  }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
 	public ResponseEntity<User> addUser(@RequestBody User user){
 		if (user.isActive()) {
 			// new user cannot be active
