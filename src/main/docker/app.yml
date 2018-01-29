@@ -1,7 +1,7 @@
 version: '2'
 services:
     usermanagement:
-        image: usermanagement
+        image: prabhakar/usermanagement
         ports:
             - 8080:8080
         environment:

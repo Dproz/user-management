@@ -1,7 +1,9 @@
 package com.ceitechs.dproz.usermanagement.adapter.rest;
 
 import com.ceitechs.dproz.shared.security.SecurityUtils;
+import com.ceitechs.dproz.usermanagement.domain.UserProjection;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,10 +35,11 @@ public class UserController {
 	
 
 	@GetMapping(value= "/{id}")
-	public ResponseEntity<User> getUser(@PathVariable String id){
+	public ResponseEntity<UserProjection> getUser(@PathVariable String id){
 	  validateUserReferenceId(id);
-		return ResponseUtil.wrapOrNotFound(userService.getUser(id));
-		
+	  Optional<UserProjection> userProjection =
+        Optional.ofNullable(userService.getUser(id).orElse(null));
+		return ResponseUtil.wrapOrNotFound(userProjection);
 	}
 
   private void validateUserReferenceId(String id) {
@@ -48,36 +51,36 @@ public class UserController {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
-	public ResponseEntity<User> addUser(@RequestBody User user){
+	public ResponseEntity<UserProjection> addUser(@Valid @RequestBody User user){
 		if (user.isActive()) {
 			// new user cannot be active
 			throw new CustomParameterizedException("newUser.invalidStatus");
 		}
         userService.findOneByEmailIgnoreCase(user.getEmailAddress()).ifPresent(u -> {throw new EmailAlreadyUsedException();});
-		User userAdded = userService.addUser(user);
+    UserProjection userAdded = userService.addUser(user);
 		 return ResponseEntity.ok()
 		            .headers(HeaderUtil.createEntityUpdateAlert("USER", userAdded.getUserReferenceId()))
 		            .body(userAdded);
 	}
 	
 	@PutMapping(value= "/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
-	public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user){
+	public ResponseEntity<UserProjection> updateUser(@PathVariable String id, @RequestBody User user){
 		User existingUser = getExistingUser(id);
 		if (existingUser.isActive() != user.isActive()) {
 			// update user cannot change the activation status
 			throw new CustomParameterizedException("invalid.activeIndicator",id);					
 		}
-		User userUpdated = userService.updateUser(user);
+    UserProjection userUpdated = userService.updateUser(user);
 		return  ResponseEntity.ok()
 	            .headers(HeaderUtil.createEntityUpdateAlert("USER", userUpdated.getUserReferenceId()))
 	            .body(userUpdated);
 	}
 	
 	@PutMapping(value= "/{id}/activation", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
-	public ResponseEntity<User> userActivation(@PathVariable String id, @RequestParam boolean activationIndicator){
+	public ResponseEntity<UserProjection> userActivation(@PathVariable String id, @RequestParam boolean activationIndicator){
 		User existingUser = getExistingUser(id);
 		existingUser.setActive(activationIndicator);
-		User updatedUser = userService.updateUser(existingUser);
+    UserProjection updatedUser = userService.updateUser(existingUser);
 		return  ResponseEntity.ok()
 	            .headers(HeaderUtil.createEntityUpdateAlert("USER", updatedUser.getUserReferenceId()))
 	            .body(updatedUser);

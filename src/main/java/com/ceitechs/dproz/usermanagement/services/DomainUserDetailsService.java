@@ -26,31 +26,33 @@ import com.ceitechs.dproz.usermanagement.domain.User;
 @Component("userDetailsService")
 public class DomainUserDetailsService implements UserDetailsService {
 
-    private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
+  private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
-    private final UserRepostitory userRepository;
+  private final UserRepostitory userRepository;
 
-    public DomainUserDetailsService(UserRepostitory userRepository) {
-        this.userRepository = userRepository;
-    }
+  public DomainUserDetailsService(UserRepostitory userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    @Override
-    public UserDetails loadUserByUsername(final String login) {
-        log.debug("Authenticating {}", login);
-        String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userFromDatabase = userRepository.findOneByEmailAddressIgnoreCase(login);
-        return userFromDatabase.map(user -> {
-            if (!user.isActive()) {
-				throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
-            }
-            List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-                    .map(authority -> new SimpleGrantedAuthority(authority.getName()))
-                .collect(Collectors.toList());
-            return new DprozUserDetail(lowercaseLogin,
-                user.getPassword(),
-                user.getUserReferenceId(),
-                grantedAuthorities);
-        }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " +
-        "database"));
-    }
+  @Override
+  public UserDetails loadUserByUsername(final String login) {
+    log.debug("Authenticating {}", login);
+    String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
+    Optional<User> userFromDatabase = userRepository.findOneByEmailAddressIgnoreCase(login);
+    return userFromDatabase.map(user -> {
+      if (!user.isActive()) {
+        log.error("User: {} not activated", lowercaseLogin);
+        throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
+      }
+      List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
+          .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+          .collect(Collectors.toList());
+      return new DprozUserDetail(lowercaseLogin,
+          user.getPassword(),
+          user.getUserReferenceId(),
+          grantedAuthorities);
+    }).orElseThrow(
+        () -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " +
+            "database"));
+  }
 }
